@@ -11,7 +11,7 @@ library(tidyverse)
 
 ```
 
-
+DNA!
 
 ```{r fig.align='center',fig.width=5,fig.height=5}
 knitr::include_graphics(path = "./media/DNA.jpg")
