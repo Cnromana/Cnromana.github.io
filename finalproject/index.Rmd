@@ -1,0 +1,90 @@
+---
+title: "Exploring Antibiotic Resistance"
+output: html_document
+---
+
+# by Christine Nakonechnyy
+
+## Background
+Bacterial resistance is a growing problem in the world. The World Health Organization mentions that antibiotic resistance arises naturally when using antibiotics, however the improper use of antibiotics has accelerated this process to the point that we are unable to overcome this resistance with medicine. This means that we are finding ourselves in the same position we were in before the development of antibiotics.
+
+Looking into which species of bacteria have the most resistance, can aid us in focusing our efforts towards bacteria that are more likely to develope resistance.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(AMR)
+library(ggplot2)
+
+```
+
+```{r fig.align='center',fig.width=5,fig.height=5}
+knitr::include_graphics(path = "../media/Antibiotic_res_punch.jpg")
+```
+# Here are the bacteria species we will be looking at
+
+It is important to note that there are some unknown species that have been tested
+
+```{r}
+dat1 <- example_isolates %>%
+  mutate(bacteria= mo_fullname()) 
+
+dat1 %>% summarise(unique(bacteria))
+
+```
+
+# Lets look at what families species have the highest rates of resistance
+
+
+```{r fig.height=9, fig.width=13}
+
+
+dat <- dat1 %>% pivot_longer(cols = c(PEN,OXA,FLC,AMX,AMC,AMP,TZP,CZO,FEP,CXM,FOX,CTX,CAZ,CRO,GEN,TOB,AMK,KAN,TMP,
+                            SXT,NIT,FOS,LNZ,CIP,MFX,VAN,TEC,TCY,TGC,DOX,ERY,CLI,AZM,IPM,MEM,MTR,CHL,COL,MUP,RIF), names_to = "Drugs", values_to = "Resistance")
+
+dat <- dat %>% filter(!is.na(Resistance))
+
+
+dat%>%filter(Resistance=="R") %>% 
+  ggplot(mapping = aes(x = Drugs,y = Resistance))+
+  facet_wrap(~bacteria)+
+  geom_bar(stat = 'identity')
+
+```
+
+
+# This image shows the prevelance of resistance within certain bacterial species
+
+Though this graph is a bit crowded, you are still able to see clusters of resistance in certain species. The graph produced indicated that the highest rates of resistance are found within Escherichia coli, coagulase-negative Staphylococcus, Staphylococcus aureus, and Staphylococcus epidermis. Lets take another look at the comparison of resistance base on the drugs used.
+
+
+
+## Drugs to look at
+These are the drugs that were considered when exploring antibiotic resistance in bacteria. Antibiotics work in two ways, they can be bacteriacidal, where they kill the bacteria, and they can be bacteriostatic, where they inhibit the growth and reproduction of the bacteria. This list also shows all the main types of antibiotics, which are Penicillins, Cephalosporins, Tetracyclines, and Aminoglycosides. 
+```{r}
+
+out <- example_isolates %>% set_ab_names()
+
+out <- out %>% pivot_longer(cols = c(benzylpenicillin,oxacillin,flucloxacillin,amoxicillin,amoxicillin_clavulanic_acid,ampicillin,piperacillin_tazobactam,cefazolin,cefepime,cefuroxime,cefoxitin,cefotaxime,ceftazidime,ceftriaxone,gentamicin,tobramycin,amikacin,kanamycin,trimethoprim,trimethoprim_sulfamethoxazole,nitrofurantoin,fosfomycin,linezolid,ciprofloxacin,moxifloxacin,vancomycin,teicoplanin,tetracycline,tigecycline,doxycycline,erythromycin,clindamycin,azithromycin,imipenem,meropenem,metronidazole,chloramphenicol,colistin,mupirocin,rifampicin),names_to = "Drugs",values_to = "Resistance")
+
+out %>% summarise(unique(Drugs))
+
+```
+## Resistance to drugs
+
+As the bar graph below shows that there is evidence of resistance with each drug. This is reinforced by the fact that anitibiotic resistance occurs naturally. However, antibiotics like metronidazole have a lot more resistance than many other antibiotics. This shows that metronidazole is used often and is quickly becoming obsolete due to the large ammount of resisitance the bacteria have acheived.
+
+```{r fig.height=10, fig.width=13}
+out %>%  ggplot(mapping = aes(x = Drugs,y = Resistance))+geom_bar(mapping = aes(reorder(x=Drugs,-Resistance)),stat = 'identity')+theme(axis.text.x = element_text(angle = 90))
+
+```
+
+```{r fig.align='center',fig.width=5,fig.height=5}
+knitr::include_graphics(path = "../media/thank you.webp")
+```
+
+## Resources
+For this project, the AMR packaged was used. It is a very user friendly package that is centered around antibiotic resistance. It has loaded data, but can also be used in extracting data larger microbial data bases. 
+The World Health Organization provided much of the background information, along with the Center of Disease Control and Prevention.
