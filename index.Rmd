@@ -16,6 +16,8 @@ DNA!
 knitr::include_graphics(path = "./media/DNA.jpg")
 ```
 
-##here's a link
+## Table of Contents
 
-[about me!](https://Cnromnana.github.io/about_me/)
+
+[Final Project](file:///C:/Users/skees/Cnromana.github.io/finalproject/index.html)
+
